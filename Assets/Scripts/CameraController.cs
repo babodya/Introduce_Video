@@ -2,19 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
+    public static CameraController instance;
+
     Camera mainCamera;
 
     public Ease ease;
     public Transform [] cameraTarget;
-    
+
+    public Image fadeImage;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            if (instance != this)
+            {
+                Destroy(this.gameObject);
+            }
+        }
+
+        //fadeImage.DOFade(1, 0.1f)
+        //    .SetEase(ease);
+
+        fadeImage.color = new Color(0, 0, 0, 1);
+    }
+
     void Start()
     {
         mainCamera = Camera.main;
 
-        CameraMoving();
+        fadeImage.DOFade(0, 1.0f)
+            .SetEase(ease)
+            .OnComplete(() =>
+            {
+                CameraMoving();
+            });
     }
 
     void Update()

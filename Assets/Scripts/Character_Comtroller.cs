@@ -34,6 +34,7 @@ public class Character_Comtroller : MonoBehaviour
     public Transform CharacterTranform;
     public Material CharacterMaterial;
     public GameObject sunglassOBJ;
+    public Transform[] CharacterPaths;
 
     [SerializeField]
     float blend_Number = 0;
@@ -65,6 +66,9 @@ public class Character_Comtroller : MonoBehaviour
 
     void Start()
     {
+        CharacterPrefab.transform.position = CharacterPaths[0].position;
+        CharacterPrefab.transform.rotation = CharacterPaths[0].rotation;
+
         //Create_Blend_AddMotions();
         danceAnimator = CharacterPrefab.GetComponent<Animator>();
         CharacterMaterial = CharacterPrefab.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().materials[0];
@@ -102,8 +106,8 @@ public class Character_Comtroller : MonoBehaviour
             .SetEase(ease);
         contenetText.DOFade(0, 1)
             .SetEase(ease);
-        CharacterMaterial.DOFade(0, 1)
-            .SetEase(ease);
+        //CharacterMaterial.DOFade(0, 1)
+        //    .SetEase(ease);
     }
 
     public void TextFadeIn()
@@ -112,8 +116,8 @@ public class Character_Comtroller : MonoBehaviour
             .SetEase(ease);
         contenetText.DOFade(1, 1)
             .SetEase(ease);
-        CharacterMaterial.DOFade(1, 1)
-            .SetEase(ease);
+        //CharacterMaterial.DOFade(1, 1)
+        //    .SetEase(ease);
     }
 
     public void TextChange()
@@ -147,26 +151,53 @@ public class Character_Comtroller : MonoBehaviour
                 DanceChange();
             }
 
-            TextFadeIn();
+            CharacterPrefab.transform.DOMove(CharacterPaths[1].position, 1.0f)
+                .SetEase(ease);
+            CharacterPrefab.transform.DORotateQuaternion(CharacterPaths[1].rotation, 1.0f)
+                .SetEase(ease)
+                .OnComplete(() =>
+                {
+                    TextFadeIn();
 
-            yield return new WaitForSeconds(5.0f);
+                    CharacterPrefab.transform.DOMove(CharacterPaths[2].position, 1.0f)
+                        .SetEase(ease);
+                    CharacterPrefab.transform.DORotateQuaternion(CharacterPaths[2].rotation, 1.0f)
+                        .SetEase(ease);
+                        //.OnComplete(() =>
+                        //{
+                            
+                        //});
+                });
+            yield return new WaitForSeconds(7.0f);
+
+            danceAnimator.SetFloat("Blend", 0);
+
+            CharacterPrefab.transform.DOMove(CharacterPaths[3].position, 1.0f)
+                .SetEase(ease);
+            CharacterPrefab.transform.DORotateQuaternion(CharacterPaths[3].rotation, 0.2f)
+                .SetEase(ease);
 
             TextFadeOut();
 
-            yield return new WaitForSeconds(0.9f);
-
-            danceAnimator.SetFloat("Blend", 0);
-            sunglassOBJ.SetActive(false);
-
-            //CharacterPrefab.transform.position = CharacterTranform.position;
-            //CharacterPrefab.transform.rotation = CharacterTranform.rotation;
-
-            CharacterPrefab.transform.DOMove(CharacterTranform.position, 0.1f)
-                .SetEase(ease);
-            CharacterPrefab.transform.DORotateQuaternion(CharacterTranform.rotation, 0.1f)
-                .SetEase(ease);
+            if(textNumber == introduce_Contents.Count)
+            {
+                CameraController.instance.fadeImage.DOFade(1, 0.5f)
+                    .SetEase(ease);
+            }
 
             yield return new WaitForSeconds(1.0f);
+
+            //sunglassOBJ.SetActive(false);
+
+            CharacterPrefab.transform.position = CharacterPaths[0].position;
+            CharacterPrefab.transform.rotation = CharacterPaths[0].rotation;
+
+            //CharacterPrefab.transform.DOMove(CharacterTranform.position, 0.1f)
+            //    .SetEase(ease);
+            //CharacterPrefab.transform.DORotateQuaternion(CharacterTranform.rotation, 0.1f)
+            //    .SetEase(ease);
+
+            yield return new WaitForSeconds(0.5f);
         }
     }
 

@@ -86,13 +86,13 @@ public class Character_Comtroller : MonoBehaviour
 
     public void DanceChange()
     {
-        if (blend_Number < 15) 
+        if (blend_Number < introduce_Contents.Count) 
         {
             blend_Number++;
             
             danceAnimator.SetFloat("Blend", blend_Number);
         }
-        else if(blend_Number == 15)
+        else if(blend_Number == introduce_Contents.Count)
         {
             danceAnimator.SetFloat("Blend", blend_Number);
 
